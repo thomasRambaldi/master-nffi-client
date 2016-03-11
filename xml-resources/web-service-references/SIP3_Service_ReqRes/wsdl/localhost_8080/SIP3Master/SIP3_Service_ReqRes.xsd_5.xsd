@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by NC3A (NC3A) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: compressionAlgs.xsd--><!--To support compression in exchange of FFT type of data--><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns="urn:nato:fft:protocols:sip3:compression" targetNamespace="urn:nato:fft:protocols:sip3:compression" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="compressionAlgType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GZIP"/>
+			<xs:enumeration value="EFX"/>
+			<xs:enumeration value="XMLPPM"/>
+			<xs:enumeration value="NONE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="compressionAlgorithmsSupported">
+		<xs:sequence>
+			<xs:element name="compression" type="ns:compressionAlgType" nillable="false" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

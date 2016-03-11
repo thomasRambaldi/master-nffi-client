@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) by - - (NATO C3 AGENCY) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: SIP3.xsd--><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:nffi="urn:nato:fft:protocols:nffi13" xmlns:error="urn:nato:fft:protocols:sip3:errors" xmlns:compr="urn:nato:fft:protocols:sip3:compression" xmlns="urn:nato:fft:protocols:sip3" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:qry="urn:nato:fft:protocols:nffi13:query" targetNamespace="urn:nato:fft:protocols:sip3" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:nato:fft:protocols:nffi13" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=1"/>
+	<xs:import namespace="urn:nato:fft:protocols:sip3:compression" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=5"/>
+	<xs:import namespace="urn:nato:fft:protocols:nffi13:query" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=2"/>
+	<xs:import namespace="urn:nato:fft:protocols:sip3:errors" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=6"/>
+	<!--Compression related definition-->
+	<xs:element name="CompressionAlgsSupported" type="compr:compressionAlgorithmsSupported"/>
+	<xs:element name="CompressionAlgUsed" type="compr:compressionAlgType">
+		<xs:annotation>
+			<xs:documentation>Compression algorithm used by data provider (decided by data provider)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!--ReqRes Query base protocol definitions-->
+	<xs:complexType name="ReqResPeriodType">
+		<xs:annotation>
+			<xs:documentation>ReqRes time frame filter(not needed for the subscription)</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="start" type="nffi:dateTimeType" use="required"/>
+		<xs:attribute name="end" type="nffi:dateTimeType"/>
+	</xs:complexType>
+	<xs:element name="ReqResFilter">
+		<xs:annotation>
+			<xs:documentation>ReqRes data filter (is the standard filter plus the time frame)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="period" type="ReqResPeriodType" nillable="false" minOccurs="0"/>
+				<xs:element ref="qry:NFFIFilter" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--ReqRes Response base protocol definitions-->
+	<xs:simpleType name="allAvailableDataTransferredType">
+		<xs:restriction base="xs:boolean"/>
+	</xs:simpleType>
+	<xs:element name="NFFIDataResponse">
+		<xs:annotation>
+			<xs:documentation>Track data response used for the req/res and for the subscription (ws-eventing data sink)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="allAvailableDataTransferred" type="allAvailableDataTransferredType"/>
+				<xs:choice>
+					<xs:element ref="nffi:NFFIMessage"/>
+					<xs:element name="compressedMessage" type="xs:base64Binary"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>Decoupled ReqRes base datatype</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="GenericRequestType" mixed="true">
+		<xs:sequence>
+			<!-- The data model the receiver wants to receive messages in. Identified by the data model dialect's namespace. -->
+			<xs:element name="ResponseDialect" type="xs:anyURI" minOccurs="0"/>
+			<!-- The filter type that the client specified. Identified by the dialect. -->
+			<xs:element name="Filter" type="DataType"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:anyAttribute namespace="##other" processContents="lax"/>
+	</xs:complexType>
+	<xs:complexType name="GenericResponseType" mixed="true">
+		<xs:sequence>
+			<xs:element name="allAvailableDataTransferred" type="allAvailableDataTransferredType"/>
+			<xs:element name="Message" type="DataType"/>
+		</xs:sequence>
+		<xs:anyAttribute namespace="##other" processContents="lax"/>
+	</xs:complexType>
+	<xs:complexType name="DataType" mixed="true">
+		<xs:sequence>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Dialect" type="xs:anyURI" use="optional"/>
+		<xs:anyAttribute namespace="##other" processContents="lax"/>
+	</xs:complexType>
+	<!-- The filter definition. -->
+	<xs:element name="SIP3DataRequest" type="GenericRequestType"/>
+	<xs:element name="SIP3DataResponse" type="GenericResponseType"/>
+</xs:schema>

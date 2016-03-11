@@ -1,0 +1,721 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2006 rel. 3 U (http://www.altova.com) --><!--Project Name: SIP3 specifications--><!--Version: 3.0--><!--Draft 4--><!--Date: 5.3.2004--><!--File: nffi_13.xsd--><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:nato:fft:protocols:nffi13" targetNamespace="urn:nato:fft:protocols:nffi13" elementFormDefault="qualified" xml:lang="en">
+	<xsd:annotation>
+		<xsd:documentation>The schema defines a layout for the NATO Friendly Force Identification (NFFI) XML message format. This message is used to exchange track information between NATO and national Force Tracking System (FTS).
+Version: NFFI 1.3
+</xsd:documentation>
+	</xsd:annotation>
+	<!---->
+	<xsd:element name="NFFIMessage">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: provides track data.
+Format: A single NFFI message can be empty (no track information). The track data is provided in 'track' element of type 'trackType'. The number of elements in a single NFFI message is unbounded.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="track" type="trackType" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Track type definition
+*******************************************************************************
+*******************************************************************************-->
+	<xsd:complexType name="trackType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Provides data related to a track. The data is divided into five sections - positional data ('positionalData' element), unit identification data ('identificationData' element), unit operational status data ('operStatusData' element), device specific data ('deviceSpecificData' element), and non-standard detailed data ('detailData'). A single track can be uniquely identified by a combination of values in 'trackSource' and 'dateTime' elements from 'positionalData' section.   
+Format: A single track contains one and only one 'positionalData' element. It is a mandatory element. All the other elements, i.e. 'identificationData', 'operStatusData', 'deviceSpecificData', and 'detailData' are optional. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="positionalData" type="positionalDataType"/>
+			<xsd:element name="identificationData" type="identificationDataType" minOccurs="0"/>
+			<xsd:element name="operStatusData" type="operStatusDataType" minOccurs="0"/>
+			<xsd:element name="deviceSpecificData" type="deviceSpecificDataType" minOccurs="0"/>
+			<xsd:element name="detailData" type="detailDataType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Positional data type definition
+*******************************************************************************
+*******************************************************************************-->
+	<xsd:complexType name="positionalDataType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: section of positional and track identification data. Defines a structure of 'positionalData' element, which is a mandatory field in an element of 'trackType' type. 
+Format: Contains a set of elements which all together constitute positional data. as well as a set attributes for security labeling. Every element type is defined separately. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!---->
+			<xsd:element name="trackSource" type="trackSourceType"/>
+			<!---->
+			<xsd:element name="dateTime" type="dateTimeType"/>
+			<!---->
+			<xsd:element name="coordinates" type="coordinatesType"/>
+			<!---->
+			<xsd:element name="bearing" minOccurs="0">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="bearingType">
+							<xsd:attribute name="accuracy" type="bearingAccuracyType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<!---->
+			<xsd:element name="speed" minOccurs="0">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="speedType">
+							<xsd:attribute name="accuracy" type="speedAccuracyType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<!---->
+			<xsd:element name="reliability" type="reliabilityType" minOccurs="0"/>
+			<!---->
+			<xsd:element name="credibility" type="credibilityType" minOccurs="0"/>
+			<!---->
+			<xsd:element name="inclination" minOccurs="0">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="inclinationType">
+							<xsd:attribute name="accuracy" type="inclinationAccuacyType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<!---->
+		</xsd:sequence>
+		<xsd:attribute name="secPolicyName" type="secPolicyNameType"/>
+		<xsd:attribute name="secClassification" type="secClassificationType"/>
+		<xsd:attribute name="secCategory" type="secCategoryType"/>
+		<!---->
+	</xsd:complexType>
+	<!--
+
+*******************************************************************************
+*****Definition of types of elements being used in 
+*****'positionalDataType' 
+*******************************************************************************-->
+	<!--
+
+******Track ID type definition-->
+	<xsd:complexType name="trackSourceType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: unambiguous identification of data source. 
+Format: contains a value being a combination of data on the device that transmitted the data and the system which releases the data. The value has to be unique for every device/system in order to unambiguously identify the source of information. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="sourceSystem" type="sourceSystemType"/>
+			<xsd:element name="transponderId" type="transponderIdType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+
+******System source type definition-->
+	<xsd:complexType name="sourceSystemType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: track data source identification. 
+Format: identifies track data owner/producer (system that releases the data and country which controls the system). The element is critical for providing track uniqueness. Therefore all the three elements should be used when applicable despite only 'system' element is mandatory. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="country" type="countryType" minOccurs="0"/>
+			<xsd:element name="system" type="systemType"/>
+			<xsd:element name="subsystem" type="systemType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+
+******Country type definition-->
+	<xsd:simpleType name="countryType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: National allegiance of the track data source. 
+Format: String of ISO Three letter-codes. Full list of values is in STANAG 1059 ed.8.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******System identyfier type definition-->
+	<xsd:simpleType name="systemType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Identification of the system which releases data.
+Format: string of up to 30 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"/>
+			<xsd:pattern value="([A-Za-z0-9\.,:\*\-])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Tracking device ID type definition-->
+	<xsd:simpleType name="transponderIdType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Data transmitting device identification / originator identification.
+Format: String of up to 60 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="60"/>
+			<xsd:pattern value="([A-Za-z0-9\.,:\*\-])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Date/Time type definition-->
+	<xsd:simpleType name="dateTimeType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Effective date and time that are referred to UTC time (see Reference : C2IEDM v 6.15a). 
+Format: ISO 8601 for date and time representation in the format YYYYMMDDhhmmss format (14 digits) 
+YYYY = YEAR (4 digits), 
+MM =   MONTH (2 digits), 
+DD =   DAY (2 digits), 
+hh =   HOUR (2 digits), 
+mm =   MINUTE (2 digits), 
+ss =   SECOND (2 digits). 
+Example :"05 of March 2005, 09 h 10 m 23 s" = 20050305091023.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="\d{14}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Coordinates type definition-->
+	<xsd:complexType name="coordinatesType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: object coordinates. 
+Format: 2/3D geographical coordinates including latitude and longitude (mandatory) and altitude (optional). </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!---->
+			<xsd:element name="latitude">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="latitudeType">
+							<xsd:attribute name="accuracy" type="horizontalAccuracyType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<!---->
+			<xsd:element name="longitude">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="longitudeType">
+							<xsd:attribute name="accuracy" type="horizontalAccuracyType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<!---->
+			<xsd:element name="altitude" minOccurs="0">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="altitudeType">
+							<xsd:attribute name="accuracy" type="altitudeAccuracyType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<!---->
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--
+
+******Latitude type definition-->
+	<xsd:simpleType name="latitudeType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Angular distance north or south of the earth's equator (see Reference ): WGS 84).
+Format: Numeric data in range including -90, 90. Value in decimal degrees. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="-90"/>
+			<xsd:maxInclusive value="90"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Longitude type definition-->
+	<xsd:simpleType name="longitudeType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Angular distance on the earth's surface, measured east or west from the prime meridian at Greenwich, England (see Reference : WGS 84).
+Format: Numeric data in range excluding -180, including 180. Value in decimal degrees. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minExclusive value="-180"/>
+			<xsd:maxInclusive value="180"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Altitude type definition-->
+	<xsd:simpleType name="altitudeType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The vertical distance of a level, a point or an object considered as a point, measured from mean sea level (see Reference : AAP-6(2006)).
+Format: Numeric data in meters msl. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double"/>
+	</xsd:simpleType>
+	<!--
+
+******Bearing type definition-->
+	<xsd:simpleType name="bearingType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The rotational measurement clockwise from the line of true North to the direction of motion of a specific track (see References : C2IEDM v 6.15e, JC3IEDM ed.3, US BFT COI EIS v.0.1). 
+Format: Numeric representation in range including 0 and excluding 360 of the bearing value in decimal degree. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxExclusive value="360"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Speed type definition-->
+	<xsd:simpleType name="speedType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Speed value of the platform that holds the tracking device.
+Format: Numeric representation of the speed value in Km per hours.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Inclination type definition-->
+	<xsd:simpleType name="inclinationType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The rotational measurement from the horizontal plane to the direction of motion of a specific battlespace object at a specific location where the positive angle is vertically upward (see References : JC3IEDM ed.3 and US BFT COI EIS v.0.1).
+Format: Numeric representation in range including 0, excluding 360. Value in decimal degrees.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxExclusive value="360"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Reliability type definition-->
+	<xsd:simpleType name="reliabilityType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: the specific value that represents, for intelligence purpose, the general appraisal of the source in graded terms to indicate the extent to which it has been proven it can be counted on or trusted in to do as expected (see References : C2IEDM v 6.15e, JC3IEDM ed.3). 
+Format: Following values are permissible: COMPLETELY RELIABLE, USUALLY RELIABLE,  FAIRLY RELIABLE, NOT USUALLY RELIABLE, UNRELIABLE, RELIABILITY CANNOT BE JUDGED.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="COMPLETELY RELIABLE"/>
+			<xsd:enumeration value="USUALLY RELIABLE"/>
+			<xsd:enumeration value="FAIRLY RELIABLE"/>
+			<xsd:enumeration value="NOT USUALLY RELIABLE"/>
+			<xsd:enumeration value="UNRELIABLE"/>
+			<xsd:enumeration value="RELIABILITY CANNOT BE JUDGED"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Credibility type definition-->
+	<xsd:simpleType name="credibilityType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: the specific value that represents, for normal operational use, the degree of trustworthiness of the data in the positionalData section (see References : C2IEDM v 6.15e, JC3IEDM ed. 3).
+Format: Following values are permissible: CONFIRMED BY OTHER SOURCES, PROBABLY TRUE, POSSIBLY TRUE, DOUBTFULLY TRUE, IMPROBABLE, TRUTH CANNOT BE JUDGED. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="CONFIRMED BY OTHER SOURCES"/>
+			<xsd:enumeration value="PROBABLY TRUE"/>
+			<xsd:enumeration value="POSSIBLY TRUE"/>
+			<xsd:enumeration value="DOUBTFULLY TRUE"/>
+			<xsd:enumeration value="IMPROBABLE"/>
+			<xsd:enumeration value="TRUTH CANNOT BE JUDGED"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Horizontal accuracy type definition-->
+	<xsd:simpleType name="horizontalAccuracyType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The one-dimensional linear distance representing the uncertainty in the horizontal plane in terms of probable circular error for a battlespace object. E.g. usually in GPS devices it is a single value which refers to a location of an absolute point described by longitude and latitude (see References : JC3IEDM ed.3 and US BFT COI EIS v.0.1). 
+Format: A non-negative numerical value in meters. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Altitude accuracy type definition-->
+	<xsd:simpleType name="altitudeAccuracyType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The one-dimensional linear distance representing the uncertainty in terms of probable error range for the vertical axis of a battlespace object (see References : JC3IEDM ed.3 and US BFT COI EIS v 0.1).
+Format: A non-negative numeric value in metres. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Bearing accuracy type definition-->
+	<xsd:simpleType name="bearingAccuracyType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The rotational measurement of a sector that represents the uncertainty range in the estimate of the bearing at a specific location. The sector is bisected by the bearing (see References : C2IEDM v 6.15e, JC3IEDM ed.3 and US BFT COI EIS v.0.1).
+Format: a non-negative numeric value in range up to and excluding 360. It represents units of degrees. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxExclusive value="360"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Speed accuracy type definition-->
+	<xsd:simpleType name="speedAccuracyType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The numeric value that denotes the uncertainty range in the estimate for the speed at a specific location where the speed estimate falls at the centre of the accuracy range (see References : C2IEDM v 6.15e, JC3IEDM ed.3 and US BFT COI EIS v.0.1)
+Format: a non-negative numeric value in kilometres per hour. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxExclusive value="10000"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Inclination accuracy type definition-->
+	<xsd:simpleType name="inclinationAccuacyType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The rotational measurement of a vertical sector that represents the uncertainty range in the estimate of the inclination at a specific location. The sector is bisected by the inclination (see References : JC3IEDM ed.3 and US BFT COI EIS v.0.1).
+Format: A non-negative numeric value in range up to and excluding 360. It represents units of degrees. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxExclusive value="360"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Unit identification type definition
+*******************************************************************************
+*******************************************************************************-->
+	<xsd:complexType name="identificationDataType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: identification of the unit that is associated with data in the 'positionalData' section. Usually needed for a standard situation display.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="unitSymbol" type="unitSymbolType"/>
+			<xsd:element name="unitShortName" type="unitShortNameType"/>
+		</xsd:sequence>
+		<xsd:attribute name="secPolicyName" type="secPolicyNameType"/>
+		<xsd:attribute name="secClassification" type="secClassificationType"/>
+		<xsd:attribute name="secCategory" type="secCategoryType"/>
+	</xsd:complexType>
+	<!--
+
+*******************************************************************************
+*****Definition of types of elements being used in 
+*****'identificationType' 
+*******************************************************************************-->
+	<!--
+
+******Unit symbol type definition-->
+	<xsd:simpleType name="unitSymbolType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Unit (graphical) symbol ID 
+Format: String of fifteen characters ([A-Z], [0-9], dash) as specified in APP-6A, Annex B - Symbol Id Coding.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[A-Z0-9\-]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Unit short name type definition-->
+	<xsd:simpleType name="unitShortNameType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: (short) Unit designator.
+Format: Free text, possibly following agreed naming conventions, up to fifteen characters. If also 'UnitSymbol' is specified, the designator need only be unique within the country specified in the 'UnitSymbol'. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash. Reference for format : ADat-P3, ORGID Set, UNIT DESIGNATION NAME FUD.
+ </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="15"/>
+			<xsd:pattern value="([A-Za-z0-9\.,:\*\-])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Operational status data type definition
+*******************************************************************************
+*******************************************************************************-->
+	<xsd:complexType name="operStatusDataType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: provides information on operational status of the unit associated with data in 'positionalData' section.
+Format: All elements of the section are optional. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!---->
+			<xsd:element name="footprint" type="footprintType" minOccurs="0"/>
+			<xsd:element name="strength" type="strengthType" minOccurs="0"/>
+			<xsd:element name="statusCode" type="statusCodeType" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="secPolicyName" type="secPolicyNameType"/>
+		<xsd:attribute name="secClassification" type="secClassificationType"/>
+		<xsd:attribute name="secCategory" type="secCategoryType"/>
+	</xsd:complexType>
+	<!--
+
+******Footprint type definition-->
+	<xsd:simpleType name="footprintType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Radius of a circular area in which the represented unit operates, measured from the centre as specified by ‘coordinates.latitude’ and ‘coordinates.longitude’ elements. 
+Format: Numeric representation of the unit coverage value in meters. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Strength type definition-->
+	<xsd:simpleType name="strengthType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Number of vehicles represented by the track.
+Format: Numeric data in range including 0 up to 65535.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:unsignedShort"/>
+	</xsd:simpleType>
+	<!--
+
+******Status type definition-->
+	<xsd:simpleType name="statusCodeType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: The specific value that represents the operational status of the represented unit (see Reference : AAP-6(2006) (Operational Readiness)).
+Format: Following values are permissible: "OPERATIONAL", "SUBSTANTIALLY OPERATIONAL", "MARGINALLY OPERATIONAL", "TEMPORARILY NOT OPERATIONAL", "NOT OPERATIONAL", "NOT KNOWN". </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OPERATIONAL"/>
+			<xsd:enumeration value="SUBSTANTIALLY OPERATIONAL"/>
+			<xsd:enumeration value="MARGINALLY OPERATIONAL"/>
+			<xsd:enumeration value="TEMPORARILY NOT OPERATIONAL"/>
+			<xsd:enumeration value="NOT OPERATIONAL"/>
+			<xsd:enumeration value="NOT KNOWN"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Device specific data type definition
+*******************************************************************************
+*******************************************************************************-->
+	<xsd:complexType name="deviceSpecificDataType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: additional data which can be provided by some of the sensors.
+Format: all elements of this type are optional.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="additionalId" type="additionalIdType" minOccurs="0"/>
+			<xsd:element name="phoneNumber" type="phoneNumberType" minOccurs="0"/>
+			<xsd:element name="serialNumber" type="serialNumberType" minOccurs="0"/>
+			<xsd:element name="terminalType" type="terminalTypeType" minOccurs="0"/>
+			<xsd:element name="terminalId" type="terminalIdType" minOccurs="0"/>
+			<xsd:element name="specialUserDefined" type="specialUserDefinedType" minOccurs="0"/>
+			<xsd:element name="alert" type="alertType" minOccurs="0"/>
+			<xsd:element name="remarks" type="remarksType" minOccurs="0" maxOccurs="4"/>
+		</xsd:sequence>
+		<xsd:attribute name="secPolicyName" type="secPolicyNameType"/>
+		<xsd:attribute name="secClassification" type="secClassificationType"/>
+		<xsd:attribute name="secCategory" type="secCategoryType"/>
+	</xsd:complexType>
+	<!--
+
+*******************************************************************************
+*****Definition of types of elements being used in 
+*****'deviceSpecificDataType' 
+*******************************************************************************-->
+	<!--
+
+******Additional ID type definition-->
+	<xsd:simpleType name="additionalIdType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Additional identification data.
+Format: Free text of up to 30 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"/>
+			<xsd:pattern value="([A-Za-z0-9\.,:\*\-])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Phone number type definition-->
+	<xsd:simpleType name="phoneNumberType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Phone number of mobile telephony-enabled tracker device.
+Format: Free text of up to 30 characters. Following characters are permissible: [0-9] and plus.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"/>
+			<xsd:pattern value="([0-9\+])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Serial number type definition-->
+	<xsd:simpleType name="serialNumberType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Manufacture serial number of the tracking device.
+Format: Free text of up to 30 characters. Following characters are permissible: [A-Z], [a-z], [0-9]. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"/>
+			<xsd:pattern value="([A-Za-z0-9])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Terminal type definition-->
+	<xsd:simpleType name="terminalTypeType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Type of terminal that operates with the tracking device.
+Format: Free text up to 30 characters. Following characters are permissible: [A-Z], [a-z], [0-9].</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"/>
+			<xsd:pattern value="([A-Za-z0-9])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Terminal ID type definition-->
+	<xsd:simpleType name="terminalIdType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Identification of the terminal that operates with the tracking device.
+Format: Free text of up to 30 characters. Following characters are permissible: [A-Z], [a-z], [0-9].</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"/>
+			<xsd:pattern value="([A-Za-z0-9])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Special user defined type definition-->
+	<xsd:simpleType name="specialUserDefinedType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Additional information related to the tracking device.
+Format: Free string of up to 60 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="60"/>
+			<xsd:pattern value="([A-Za-z0-9\.,:\*\-])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Alert type definition-->
+	<xsd:simpleType name="alertType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Emergency state. In general, it is an emergency before destruction of the FTS equipment.  
+Format: Boolean value representing the emergency state. The value is TRUE if the device is in the emergency state. The detailed nature of the emergency can be explained in remark field. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:boolean"/>
+	</xsd:simpleType>
+	<!--
+
+******Remarks type definition-->
+	<xsd:simpleType name="remarksType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Additional remarks on the track
+Format: Free text up to 60 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="60"/>
+			<xsd:pattern value="([A-Za-z0-9\.,:\*\-])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Detail type definition
+*******************************************************************************
+*******************************************************************************-->
+	<xsd:complexType name="detailDataType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Gives some flexibility in the future addition of extensions to the message definition. It can be used to include specific ad hoc requirements and/or to carry information that is specific to smaller communities of producers and consumers and require more intimate knowledge of the operating domain. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="secPolicyName" type="secPolicyNameType"/>
+		<xsd:attribute name="secClassification" type="secClassificationType"/>
+		<xsd:attribute name="secCategory" type="secCategoryType"/>
+		<xsd:anyAttribute processContents="skip"/>
+	</xsd:complexType>
+	<!--
+
+*******************************************************************************
+*******************************************************************************
+*****Security layer types definition
+*******************************************************************************
+*******************************************************************************
+*****Identified security layer types are in line with security related 
+*****fields specified in "GUIDANCE ON THE USE OF METADATA 
+*****ELEMENT DESCRIPTIONS FOR USE IN THE NATO DISCOVERY 
+*****METADATA SPECIFICATION (NDMS)" 
+*****Reference EAPC(AC/322-SC/5)N(2006)0008
+*******************************************************************************-->
+	<!--
+
+******Security policy name type-->
+	<xsd:simpleType name="secPolicyNameType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Identify the nation or organization responsible for creating, maintaining, and implementing the security policy to be applied to the information. The security policy is understood as a set of rules for protecting information against unauthorized discloser, while maintaining authorised access, and preventing loss of unauthorized modification. The policy bodies of different security domains must agree on a common understanding of the handling requirements for information of a particular sensitivity. After the understanding exists, mappings from one security policy to another can be created (see Reference EAPC(AC/322-SC/5)N(2006)0008).
+Format: Free text up to 50 characters.
+Example: NATO, NATO/EAPC, NATO/PFP, NATO/EU, NATO/RUSSIA, NATO/UKRAINE. National use includes: USA, FRA, GBR, NLD, etc.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="256"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Security classification type-->
+	<xsd:simpleType name="secClassificationType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Security markings that indicate the sensitivity level of the information (see Reference : EAPC(AC/322-SC/5)N(2006)0008).
+Format: Free text of up to 30 characters. 
+Example: as defined in AC/322-D(2004)0021 and in "Guidance on the use of metadata element descriptions for use in NDMS": UNMARKED, UNCLASSIFIED, RESTRICTED, CONFIDENTIAL, SECRET, and COSMIC TOP SECRET. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="30"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+******Security category type-->
+	<xsd:simpleType name="secCategoryType">
+		<xsd:annotation>
+			<xsd:documentation>Purpose: Indication of an additional, specific sensitivity, or a dissemination control, or an informational marking on which no automated access control is performed (see Reference : EAPC(AC/322-SC/5)N(2006)0008).
+Format: string of up to 256 characters.
+Examples: special category designator include ATOMAL, CRYPTO, SIOP, SIOP ESI. Dissemination Limitation Markings include EXCLUSIVE, INTELLIGENCE, LOGISTICS, OPERATIONS. Release categories include RELEASABLE TO, RELEASABLE FOR (e.g. RELEASABLE TO ISAF or RELEASABLE FOR INTERNET TRANSMISSION). Administrative markings include MANAGEMENT, STAFF, PERSONAL, MEDICAL, COMMERCIAL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="256"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

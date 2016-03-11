@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by - - (NATO C3 AGENCY) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: SIP3_delivery_batched.xsd--><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:nato:fft:protocols:sip3:delivery:batched" targetNamespace="urn:nato:fft:protocols:sip3:delivery:batched" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>Schema defining the additional parameters to be used for the batched delivery mode. Those parameters are to be added to the subscribe/delivery section of the WS-Event subscription. The delivery mode to use to request for the batched delivery if the "urn:nato:fft:protocols:sip3:delivery:batched"
+		This delivery schema is DEPRECATED and is to be used in conjuction with the TrackPush event sink</xs:documentation>
+	</xs:annotation>
+	<xs:element name="Heartbeats" type="xs:boolean" default="true">
+		<xs:annotation>
+			<xs:documentation>If true the Heartbeat signal is requireq for the batched mode. Normally if there are no data collected in the time interval the track message is not be sent at the interval expiration. If the hearbeat is "true" the data provider has always to send a message (also if empty) at the interval expiration time.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="MinTime" type="xs:long" default="30">
+		<xs:annotation>
+			<xs:documentation>Is the Minimum delay in seconds between two consecutive updates. In case no tracks where collected in the interval the server should not send the update message except if the Hearbeats is true.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

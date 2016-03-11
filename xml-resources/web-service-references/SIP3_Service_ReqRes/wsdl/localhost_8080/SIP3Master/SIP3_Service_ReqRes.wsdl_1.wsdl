@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) by - - (NATO C3 AGENCY) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: SIP3_Definitions.wsdl--><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:ns="urn:nato:fft:protocols:sip3:wsdlservice" xmlns:ns1="urn:nato:fft:protocols:sip3" xmlns:ns3="uurn:nato:fft:protocols:sip3:compression" xmlns:ns2="urn:nato:fft:protocols:nffi13" xmlns:ns4="urn:nato:fft:protocols:sip3:errors" xmlns:ns5="urn:nato:fft:protocols:nffi13:query" xmlns:ns6="urn:nato:fft:protocols:sip3:delivery:batched" xmlns:ns7="urn:nato:fft:protocols:sip3:compression" targetNamespace="urn:nato:fft:protocols:sip3:wsdlservice">
+	<wsdl:types>
+		<xs:schema>
+			<xs:import namespace="urn:nato:fft:protocols:sip3:delivery:batched" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=4"/>
+			<xs:import namespace="urn:nato:fft:protocols:sip3" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=3"/>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="PullDataRequestMessage">
+		<wsdl:part name="request" element="ns1:ReqResFilter"/>
+	</wsdl:message>
+	<wsdl:message name="PullDataResponseMessage">
+		<wsdl:part name="response" element="ns1:NFFIDataResponse"/>
+	</wsdl:message>
+	<wsdl:message name="CompressionSupported">
+		<wsdl:part name="compression" element="ns1:CompressionAlgsSupported"/>
+	</wsdl:message>
+	<wsdl:message name="CompressionUsed">
+		<wsdl:part name="compression" element="ns1:CompressionAlgUsed"/>
+	</wsdl:message>
+	<wsdl:message name="TracksPushDataMessage">
+		<wsdl:part name="request" element="ns1:NFFIDataResponse"/>
+	</wsdl:message>
+	<wsdl:message name="PullDataFaultMessage">
+		<wsdl:part name="parameter" element="ns4:SIP3Fault"/>
+	</wsdl:message>
+	<wsdl:message name="DecPullDataRequestMessage">
+		<wsdl:part name="parameter" element="ns1:SIP3DataRequest"/>
+	</wsdl:message>
+	<wsdl:message name="DecPullDataResponseMessage">
+		<wsdl:part name="parameter" element="ns1:SIP3DataResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DecPullDataFaultMessage">
+		<wsdl:part name="parameter" element="ns4:SIP3Fault"/>
+	</wsdl:message>
+	<wsdl:portType name="SIP3_Port_ReqRes">
+		<wsdl:documentation>Request Response protocol</wsdl:documentation>
+		<wsdl:operation name="PullDataOperation">
+			<wsdl:input name="PullDataRequest" message="ns:PullDataRequestMessage"/>
+			<wsdl:output name="PullDataResponse" message="ns:PullDataResponseMessage"/>
+			<wsdl:fault name="PullDataFault" message="ns:PullDataFaultMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="SIP3_Port_TracksPush">
+		<wsdl:operation name="TracksPushDataOperation">
+			<wsdl:input message="ns:TracksPushDataMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="SIP3_Port_DecReqRes">
+		<wsdl:documentation>Decoupled Request Response protocol</wsdl:documentation>
+		<wsdl:operation name="DecPullDataOperation">
+			<wsdl:input name="DecPullDataRequest" message="ns:DecPullDataRequestMessage"/>
+			<wsdl:output name="DecPullDataResponse" message="ns:DecPullDataResponseMessage"/>
+			<wsdl:fault name="DecPullDataFault" message="ns:DecPullDataFaultMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="SIP3_Port_DecTracksPush">
+		<wsdl:operation name="TracksPushDataOperation">
+			<wsdl:input message="ns:DecPullDataResponseMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+</wsdl:definitions>
