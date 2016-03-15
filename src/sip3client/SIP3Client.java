@@ -1,45 +1,71 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sip3client;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
 import nato.fft.protocols.sip3.NFFIDataResponse;
+import nato.fft.protocols.sip3.ReqResFilter;
 import nato.fft.protocols.sip3.reqresservice.PullDataFaultMessage;
+import nato.fft.protocols.sip3.reqresservice.SIP3PortReqRes;
+import nato.fft.protocols.sip3.reqresservice.SIP3ServiceReqRes;
 
-/**
- *
- * @author Frank
- */
 public class SIP3Client {
-
+    
     public static final int FACTOR = 100;
     public static final int CAP = 500;
     
-    public static long aksess(int antall) throws PullDataFaultMessage {                
+    private final Optional<URL> wsdlLocation;
+    
+    public static void main(String[] args) throws PullDataFaultMessage, MalformedURLException {
+        SIP3Client client;
+        if (args.length > 0) {
+            System.out.println("Using provided wsdl:" + args[0]);
+            client = new SIP3Client(new URL(args[0]));
+        } else {
+            System.out.println("Using default WSDL");
+            client = new SIP3Client();
+        }
+
+        client.start();
+    }
+    
+    public SIP3Client() {
+        wsdlLocation = Optional.empty();
+    }
+    
+    public SIP3Client(URL url) {
+        wsdlLocation = Optional.of(url);
+    }
+    
+    public void start() throws PullDataFaultMessage {
+        for (int i = FACTOR; i<=CAP; i+=FACTOR) {
+            System.out.println("Running "+i+" WS accesses...");            
+            System.out.println("Avg. RTT: " + aksess(i) + " ms.");
+        }
+    }
+    
+    public long aksess(int antall) throws PullDataFaultMessage {                
         long ts1 = System.currentTimeMillis();        
         for (int i=0;i<antall; ++i) {
-            pullDataOperation(null);
+            NFFIDataResponse response = pullDataOperation(null);
+            if (response.getNFFIMessage().getTrack().isEmpty() ) {
+                throw new RuntimeException("Tracks is empty. Something is probably wrong");
+            }
         }
         long ts2 = System.currentTimeMillis();        
                 
         return (ts2-ts1)/antall;
     }
-    
-    public static void main(String[] args) throws PullDataFaultMessage {
 
-        
-        for (int i = FACTOR; i<=CAP; i+=FACTOR) {
-            System.out.println("Running "+i+" WS accesses...");            
-            System.out.println("Avg. RTT: "+aksess(i) + " ms.");
+    private NFFIDataResponse pullDataOperation(ReqResFilter request) throws PullDataFaultMessage {
+        SIP3ServiceReqRes service;
+        if (wsdlLocation.isPresent()) {
+            service = new SIP3ServiceReqRes(wsdlLocation.get());
+        } else {
+            service = new SIP3ServiceReqRes();
         }
-                
-    }
-
-    private static NFFIDataResponse pullDataOperation(nato.fft.protocols.sip3.ReqResFilter request) throws PullDataFaultMessage {
-        nato.fft.protocols.sip3.reqresservice.SIP3ServiceReqRes service = new nato.fft.protocols.sip3.reqresservice.SIP3ServiceReqRes();
-        nato.fft.protocols.sip3.reqresservice.SIP3PortReqRes port = service.getSIP3ServicePortReqRes();
+        
+        SIP3PortReqRes port = service.getSIP3ServicePortReqRes();
         return port.pullDataOperation(request);
     }
     
