@@ -2,17 +2,19 @@ package sip3client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import nato.fft.protocols.sip3.NFFIDataResponse;
 import nato.fft.protocols.sip3.ReqResFilter;
 import nato.fft.protocols.sip3.reqresservice.PullDataFaultMessage;
 import nato.fft.protocols.sip3.reqresservice.SIP3PortReqRes;
 import nato.fft.protocols.sip3.reqresservice.SIP3ServiceReqRes;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class SIP3Client {
     
-    public static final int FACTOR = 100;
-    public static final int CAP = 500;
+    public static final int FACTOR = 20;
+    public static final int CAP = 20;
     
     private final Optional<URL> wsdlLocation;
     
@@ -38,23 +40,40 @@ public class SIP3Client {
     }
     
     public void start() throws PullDataFaultMessage {
+        System.out.println("Dowing one warm-up..");
+        NFFIDataResponse response = pullDataOperation(null);
+        
         for (int i = FACTOR; i<=CAP; i+=FACTOR) {
             System.out.println("Running "+i+" WS accesses...");            
-            System.out.println("Avg. RTT: " + aksess(i) + " ms.");
+            aksess(i);
         }
     }
     
-    public long aksess(int antall) throws PullDataFaultMessage {                
-        long ts1 = System.currentTimeMillis();        
-        for (int i=0;i<antall; ++i) {
+    public long aksess(int antall) throws PullDataFaultMessage {     
+        DescriptiveStatistics stats = new DescriptiveStatistics();
+        pullDataOperation(null); // Warm up
+        
+        for (int i=0; i<antall; ++i) {
+            long ts1 = System.currentTimeMillis();  
             NFFIDataResponse response = pullDataOperation(null);
             if (response.getNFFIMessage().getTrack().isEmpty() ) {
                 throw new RuntimeException("Tracks is empty. Something is probably wrong");
             }
+            long ts2 = System.currentTimeMillis();        
+            stats.addValue(ts2-ts1);
+            System.out.println("Finished running test" + i);
+            
         }
-        long ts2 = System.currentTimeMillis();        
-                
-        return (ts2-ts1)/antall;
+            System.out.println("Finshed running " + antall + " tests");
+        System.out.println(LocalDateTime.now().toString());
+
+        System.out.println("Mean: " + stats.getMean());
+        System.out.println("Standard Deviation: " + stats.getStandardDeviation());
+        System.out.println("Variance: " + stats.getVariance());
+       System.out.println("Min: " + stats.getMin());
+        System.out.println("Max: " + stats.getMax());
+        System.out.println("Median: " + stats.getPercentile(50));
+        return 0;
     }
 
     private NFFIDataResponse pullDataOperation(ReqResFilter request) throws PullDataFaultMessage {
