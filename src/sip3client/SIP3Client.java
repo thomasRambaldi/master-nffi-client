@@ -13,8 +13,8 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class SIP3Client {
     
-    public static final int FACTOR = 20;
-    public static final int CAP = 20;
+    public static final int FACTOR = 1;
+    public static final int CAP = 1;
     
     private final Optional<URL> wsdlLocation;
     
@@ -40,9 +40,6 @@ public class SIP3Client {
     }
     
     public void start() throws PullDataFaultMessage {
-        System.out.println("Dowing one warm-up..");
-        NFFIDataResponse response = pullDataOperation(null);
-        
         for (int i = FACTOR; i<=CAP; i+=FACTOR) {
             System.out.println("Running "+i+" WS accesses...");            
             aksess(i);
@@ -51,7 +48,7 @@ public class SIP3Client {
     
     public long aksess(int antall) throws PullDataFaultMessage {     
         DescriptiveStatistics stats = new DescriptiveStatistics();
-        pullDataOperation(null); // Warm up
+        //pu    llDataOperation(null); // Warm up
         
         for (int i=0; i<antall; ++i) {
             long ts1 = System.currentTimeMillis();  

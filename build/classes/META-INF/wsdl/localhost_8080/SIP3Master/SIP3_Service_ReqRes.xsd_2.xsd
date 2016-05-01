@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by - - (NATO C3 AGENCY) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: nffi_13_Query.xsd--><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:nffi="urn:nato:fft:protocols:nffi13" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="urn:nato:fft:protocols:nffi13:query" targetNamespace="urn:nato:fft:protocols:nffi13:query" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:nato:fft:protocols:nffi13" schemaLocation="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=1"/>
+	<!-- Element to be used in the subscription filter specification	-->
+	<xs:element name="NFFIFilter" type="NFFIFilterType"/>
+	<!--Query for NFFI-13 format basic information	-->
+	<xs:complexType name="NFFIFilterType">
+		<xs:sequence>
+			<xs:element name="historyDepth" default="1" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedInt">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="systemList" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>inclusive/exclusive</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="incl_excl" type="filterIncl_exclType" default="INCLUSIVE" minOccurs="0"/>
+						<xs:element name="trackSource" type="trackSourceType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="geoFilter" nillable="false" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation> </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="rectangular" nillable="false" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="leftTopCorner">
+										<xs:annotation>
+											<xs:documentation>North/West corner of the rectangle</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="longitude" type="nffi:longitudeType"/>
+												<xs:element name="latitude" type="nffi:latitudeType"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="rightBottomCorner">
+										<xs:annotation>
+											<xs:documentation>South/Est corner of the rectangle</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="longitude" type="nffi:longitudeType"/>
+												<xs:element name="latitude" type="nffi:latitudeType"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="closedPolygon" nillable="false" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="point" minOccurs="3" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="longitude" type="nffi:longitudeType"/>
+												<xs:element name="latitude" type="nffi:latitudeType"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="circle" nillable="false" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="center">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="longitude" type="nffi:longitudeType"/>
+												<xs:element name="latitude" type="nffi:latitudeType"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="radius" type="xs:unsignedLong">
+										<xs:annotation>
+											<xs:documentation>Distance from the central point in meters</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="XPathFilter" type="xs:string" nillable="false" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="maxFrame" nillable="false" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedLong">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--******System source type definition for filtering (no mandatory fields)-->
+	<xs:complexType name="SourceSystemType">
+		<xs:annotation>
+			<xs:documentation>Purpose: track data source identification for filtering. 
+Format: identifies track data owner/producer (system that releases the data and country which controls the system). The element is critical for providing track uniqueness. Beeing a filter element no mandatory elements exists </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="country" type="countryType" minOccurs="0"/>
+			<xs:element name="system" type="systemType" minOccurs="0"/>
+			<xs:element name="subsystem" type="systemType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+
+******Country type definition-->
+	<xs:simpleType name="countryType">
+		<xs:annotation>
+			<xs:documentation>Purpose: National allegiance of the track data source. 
+Format: String of ISO Three letter-codes. Full list of values is in STANAG 1059 ed.8. To accept the wildchar % the lenght can be from 1 to 3</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3"/>
+			<xs:pattern value="([%A-Z])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+
+******System identyfier type definition-->
+	<xs:simpleType name="systemType">
+		<xs:annotation>
+			<xs:documentation>Purpose: Identification of the system which releases data.
+Format: string of up to 30 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"/>
+			<xs:pattern value="([%A-Za-z0-9\.,:\*\-])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+
+******Tracking device ID type definition-->
+	<xs:simpleType name="transponderIdType">
+		<xs:annotation>
+			<xs:documentation>Purpose: Data transmitting device identification / originator identification.
+Format: String of up to 60 characters. Following characters are permissible: [A-Z], [a-z], [0-9], period, comma, colon, asterisk, and dash.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="60"/>
+			<xs:pattern value="([%A-Za-z0-9\.,:\*\-])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="filterIncl_exclType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INCLUSIVE"/>
+			<xs:enumeration value="EXCLUSIVE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+
+******Track ID type definition-->
+	<xs:complexType name="trackSourceType">
+		<xs:annotation>
+			<xs:documentation>Purpose: unambiguous identification of data source. 
+Format: contains a value being a combination of data on the device that transmitted the data and the system which releases the data. The value has to be unique for every device/system in order to unambiguously identify the source of information. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="sourceSystem" type="SourceSystemType" minOccurs="0"/>
+			<xs:element name="transponderId" type="transponderIdType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

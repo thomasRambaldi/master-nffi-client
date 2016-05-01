@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by - - (NATO C3 AGENCY) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: errorCodes.xsd--><!--To support error handling in exchange of FFT type of data--><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:nato:fft:compression" xmlns:ns4="urn:nato:fft:protocols:sip3:errors" targetNamespace="urn:nato:fft:protocols:sip3:errors" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="SIP3Fault">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="SIP3FCode" type="xs:string"/>
+				<xs:element name="SIP3FString" type="xs:string"/>
+				<!-- Used in a fault if the specified data filter dialect is unsupported. -->
+				<xs:element name="SIP3FSupportedDialect" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+				<!-- Used in a fault if the specified data model dialect is unsupported. -->
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?wsdl" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.wsdl"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?wsdl=1" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.wsdl_1.wsdl"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=4" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.xsd_4.xsd"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=3" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.xsd_3.xsd"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=1" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=5" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.xsd_5.xsd"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=2" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.xsd_2.xsd"/>
+    <system systemId="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?xsd=6" uri="wsdl/localhost_8080/SIP3Master/SIP3_Service_ReqRes.xsd_6.xsd"/>
+</catalog>

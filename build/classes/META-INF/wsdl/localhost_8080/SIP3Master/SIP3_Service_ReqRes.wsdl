@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><!-- edited with XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) by - - (NATO C3 AGENCY) --><!--Project Name: SIP3 V 1.1.0 specifications--><!--Document Version: 1--><!--Draft 1--><!--Date: 5.03.2008--><!--File: SIP3_Service_ReqRes.wsdl--><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:def="urn:nato:fft:protocols:sip3:wsdlservice" xmlns:ns="urn:nato:fft:protocols:sip3:reqresservice" name="SIP3_Service_ReqRes" targetNamespace="urn:nato:fft:protocols:sip3:reqresservice">
+	<wsdl:import namespace="urn:nato:fft:protocols:sip3:wsdlservice" location="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes?wsdl=1"/>
+	<wsdl:binding name="SIP3_Binding_ReqRes" type="def:SIP3_Port_ReqRes">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="PullDataOperation">
+			<soap:operation soapAction="PullDataOperation" style="document"/>
+			<wsdl:input name="PullDataRequest">
+				<!--Use the header element below to specify supported compression algorithms -->
+				<!--soap:header message="def:compressionSupported" part="compression" use="literal"/-->
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="PullDataResponse">
+				<!--Use the header element below to specify the used compression algorithm -->
+				<!--soap:header message="def:compressionUsed" part="compression" use="literal"/-->
+				<soap:body use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="PullDataFault">
+				<soap:fault name="PullDataFault" use="literal"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="NewBinding" type="def:SIP3_Port_DecReqRes">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="DecPullDataOperation">
+			<soap:operation soapAction="urn:#DecPullDataOperation"/>
+			<wsdl:input name="DecPullDataRequest">
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="DecPullDataResponse">
+				<soap:body use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="DecPullDataFault">
+				<soap:fault name="DecPullDataFault" use="literal"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="SIP3_Service_ReqRes">
+		<wsdl:documentation>Simple SIP3 Request/Response Service. 
+Initiated by subscriber.</wsdl:documentation>
+		<wsdl:port name="SIP3_ServicePort_ReqRes" binding="ns:SIP3_Binding_ReqRes">
+			<soap:address location="http://localhost:8080/SIP3Master/SIP3_Service_ReqRes"/>
+		</wsdl:port>
+		<wsdl:port name="SIP3_ServicePort_DecReqRes" binding="ns:NewBinding">
+			<soap:address location="http://localhost/decReqRes_Service"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
